@@ -1,6 +1,7 @@
 export const metadata = {
-  title: "Home - Simple",
-  description: "Page description",
+  title: "SecureEduMail - Web",
+  description: "SecureEduMail\n" +
+      "Une plateforme éducative sécurisée pour les étudiants et les enseignants.",
 };
 
 import Hero from "@/components/hero-home";
