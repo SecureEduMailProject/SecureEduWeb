@@ -31,7 +31,7 @@ export default function HeroHome() {
               data-aos-delay={150}
             >
               SecureEduMail <br className="max-lg:hidden" />
-              Une plateforme éducative sécurisée pour les étudiants et les enseignants.
+              Une plateforme éducative sécurisée pour les étudiants.
             </h1>
             <div className="mx-auto max-w-3xl">
               <p
@@ -39,7 +39,7 @@ export default function HeroHome() {
                 data-aos="zoom-y-out"
                 data-aos-delay={300}
               >
-                SecureEduMail est une plateforme éducative qui vise à faciliter la communication et la collaboration entre les étudiants et les enseignants. Il fonctionne sans serveur SMTP, simplement avec une API Rest à déployer. Les adresses électroniques sont intraçables et chiffrées de bout en bout. Seulement l'identité peut-être révélée.
+                SecureEduMail est une plateforme éducative qui vise à faciliter la communication et la collaboration entre les étudiants. Il fonctionne sans serveur SMTP, simplement avec une API Rest à déployer. Les adresses électroniques sont intraçables et chiffrées de bout en bout. Seulement l'identité peut-être révélée.
               </p>
               <div className="relative before:absolute before:inset-0 before:border-y before:[border-image:linear-gradient(to_right,transparent,theme(colors.slate.300/.8),transparent)1]">
                 <div
