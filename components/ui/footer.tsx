@@ -15,7 +15,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <Logo />
             </div>
             <div className="text-sm text-gray-600">
-            Copyright © 2024 - SecureEduMail, Ce site est protégé par la licence Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
+            Copyright © 2024 - SecureEduMail, Ce site est protégé par la licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.</a>
             </div>
           </div>
 
