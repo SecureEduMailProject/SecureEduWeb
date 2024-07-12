@@ -37,6 +37,12 @@ export default function Header() {
               >
                 Référenciel
               </Link>
+              <Link
+                href="https://github.com/secureeedumailproject"
+                className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
+              >
+                Projet
+              </Link>
             </li>
           </ul>
         </div>
