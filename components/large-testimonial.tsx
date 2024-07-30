@@ -31,8 +31,8 @@ export default function LargeTestimonial() {
             </div>
             <p className="text-2xl font-bold text-gray-900">
               “Depuis que j'ai débuté ce projet, j'ai pu vraiment développé{" "}
-              <em className="italic text-gray-500">mes connaissances ainsi que ma réflexion à comprendre les choses. </em>
-               Je peux comprendre ainsi le principe d'une messagerie électronique mais refait à ma sauce.”
+              <em className="italic text-gray-500">mes connaissances. </em>
+               Jai découvert le fonctionnement d'une messagerie électronique mais je veux permettre le fonctionnement de ma messagerie sans serveur SMTP en utilisant une API Rest en TS. Ce qui rend ma messagerie très securisé dans un reseau intranet.”
             </p>
             <div className="text-sm font-medium text-gray-500">
               <span className="text-gray-700">Sandro Soria</span>{" "}
