@@ -32,7 +32,7 @@ export default function Header() {
           <ul className="flex flex-1 items-center justify-end gap-3">
             <li>
               <Link
-                  href="../pages/login"
+                  href=""
                   className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
               >
                 Se connecter

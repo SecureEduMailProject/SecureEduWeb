@@ -1,6 +1,7 @@
 import Image from "next/image";
 import PageIllustration from "@/components/page-illustration";
 import Avatar01 from "@/public/images/avatar-01.jpg";
+import Link from 'next/link';
 
 export default function HeroHome() {
   return (
@@ -47,18 +48,12 @@ export default function HeroHome() {
                     data-aos="zoom-y-out"
                     data-aos-delay={450}
                 >
-                  <a
-                      className="btn w-full bg-white text-gray-800 shadow hover:bg-gray-50 sm:ml-4 sm:w-auto"
-                      href="/download"
-                  >
+                  <Link href="/download" className="btn w-full bg-white text-gray-800 shadow hover:bg-gray-50 sm:ml-4 sm:w-auto">
                     Téléchargement
-                  </a>
-                  <a
-                      className="btn w-full bg-white text-gray-800 shadow hover:bg-gray-50 sm:ml-4 sm:w-auto"
-                      href="/documentation"
-                  >
+                  </Link>
+                  <Link href="/pages/documentation" className="btn w-full bg-white text-gray-800 shadow hover:bg-gray-50 sm:ml-4 sm:w-auto">
                     Documentation
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

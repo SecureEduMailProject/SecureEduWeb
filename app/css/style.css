@@ -7,3 +7,4 @@
 @import "additional-styles/theme.css";
 
 @import "tailwindcss/utilities";
+@import 'flowbite';
