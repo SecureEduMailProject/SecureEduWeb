@@ -32,8 +32,16 @@ export default function Header() {
           <ul className="flex flex-1 items-center justify-end gap-3">
             <li>
               <Link
-                href="https://github.com/Sandro642/SecureEduMail"
-                className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
+                  href="../pages/login"
+                  className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
+              >
+                Se connecter
+              </Link>
+            </li>
+            <li>
+              <Link
+                  href="https://github.com/Sandro642/SecureEduMail"
+                  className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
               >
                 Référenciel
               </Link>
