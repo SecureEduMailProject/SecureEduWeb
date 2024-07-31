@@ -1,4 +1,4 @@
-import DownloadPage from "@/components/download";
+import DownloadPage from "@/pages/download";
 
 export const metadata = {
   title: "SecureEduMail - Web",
