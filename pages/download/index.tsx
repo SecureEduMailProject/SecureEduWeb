@@ -37,7 +37,8 @@ const data = [
         downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
         githubLink: 'https://github.com/your-repo/commit/773'
     },
-    // Ajoutez d'autres données ici
+    // Ajoutez d'autres données ici pour le test
+    // Ajoutez d'autres éléments pour tester la pagination
 ];
 
 const DownloadPage = () => {
@@ -46,6 +47,8 @@ const DownloadPage = () => {
     const [selectedRepoType, setSelectedRepoType] = useState('Tout');
     const [selectedTag, setSelectedTag] = useState('Tag');
     const [selectedPeriod, setSelectedPeriod] = useState('Toute période');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 15;
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const searchTerm = event.target.value.toLowerCase();
@@ -57,6 +60,7 @@ const DownloadPage = () => {
             build.type.toLowerCase().includes(searchTerm)
         );
         setFilteredBuilds(filtered);
+        setCurrentPage(1); // Reset to the first page on search
     };
 
     const handleRepoTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -102,6 +106,16 @@ const DownloadPage = () => {
             return matchesRepoType && matchesTag && matchesPeriod;
         });
         setFilteredBuilds(filtered);
+        setCurrentPage(1); // Reset to the first page on filter
+    };
+
+    const totalPages = Math.ceil(filteredBuilds.length / itemsPerPage);
+    const displayedBuilds = filteredBuilds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    const handlePageChange = (page: number) => {
+        if (page > 0 && page <= totalPages) {
+            setCurrentPage(page);
+        }
     };
 
     return (
@@ -122,6 +136,7 @@ const DownloadPage = () => {
                     <div className="flex items-center space-x-4">
                         <select
                             onChange={handleRepoTypeChange}
+                            value={selectedRepoType}
                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
                             <option value="Tout">Tout</option>
@@ -131,6 +146,7 @@ const DownloadPage = () => {
                         </select>
                         <select
                             onChange={handleTagChange}
+                            value={selectedTag}
                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
                             <option value="Tag">Tag</option>
@@ -141,6 +157,7 @@ const DownloadPage = () => {
                         </select>
                         <select
                             onChange={handlePeriodChange}
+                            value={selectedPeriod}
                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
                             <option value="Toute période">Toute période</option>
@@ -153,11 +170,17 @@ const DownloadPage = () => {
                     <label htmlFor="table-search" className="sr-only">Search</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg className="w-5 h-9 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m1.5-2.5a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/>
+                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m1.5-2.5a7.5 7.5 0 1 0-15 0 7.5 7.5 0 0 0 15 0Z"/>
                             </svg>
                         </div>
-                        <input type="text" id="table-search" onChange={handleSearch} className="block p-2.5 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Rechercher"/>
+                        <input
+                            type="text"
+                            id="table-search"
+                            onChange={handleSearch}
+                            className="block p-2.5 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Rechercher"
+                        />
                     </div>
                 </div>
             </div>
@@ -177,22 +200,72 @@ const DownloadPage = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {filteredBuilds.map((build) => (
-                    <tr key={build.id} className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td className="px-6 py-4">{build.id}</td>
+                {displayedBuilds.map((build) => (
+                    <tr key={build.id}
+                        className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td className="px-6 py-4"><span
+                            className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">#{build.id}</span>
+                        </td>
                         <td className="px-6 py-4">{build.name}</td>
                         <td className="px-6 py-4">{build.hash}</td>
                         <td className="px-6 py-4">{build.date}</td>
-                        <td className="px-6 py-4">{build.version}</td>
-                        <td className="px-6 py-4">{build.type}</td>
+                        <td className="px-6 py-4"><span
+                            className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{build.version}</span>
+                        </td>
+                        <td className="px-6 py-4"><span
+                            className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{build.type}</span>
+                        </td>
                         <td className="px-6 py-4">{build.tag}</td>
-
-                        <td className="px-6 py-4"><a href={build.downloadLink} className="text-blue-600 hover:underline">Télécharger</a></td>
-                        <td className="px-6 py-4"><a href={build.githubLink} className="text-blue-600 hover:underline">GitHub</a></td>
+                        <td className="px-6 py-4"><a href={build.downloadLink}
+                                                     className="text-blue-600 hover:underline">Télécharger</a></td>
+                        <td className="px-6 py-4"><a href={build.githubLink}
+                                                     className="text-blue-600 hover:underline">GitHub</a></td>
                     </tr>
+
                 ))}
                 </tbody>
             </table>
+
+            <nav className="flex items-center flex-col flex-wrap md:flex-row justify-between pt-4"
+                 aria-label="Table navigation">
+                <span
+                    className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                    Showing <span
+                    className="font-semibold text-gray-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> to <span
+                    className="font-semibold text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredBuilds.length)}</span> of <span
+                    className="font-semibold text-gray-900 dark:text-white">{filteredBuilds.length}</span>
+                </span>
+                <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                    <li>
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        >
+                            Previous
+                        </button>
+                    </li>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <li key={index}>
+                            <button
+                                onClick={() => handlePageChange(index + 1)}
+                                className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === index + 1 ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}`}
+                            >
+                                {index + 1}
+                            </button>
+                        </li>
+                    ))}
+                    <li>
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        >
+                            Next
+                        </button>
+                    </li>
+                </ul>
+            </nav>
         </div>
     );
 };
