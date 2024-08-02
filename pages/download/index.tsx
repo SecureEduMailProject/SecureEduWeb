@@ -100,7 +100,6 @@ const DownloadPage = () => {
         const searchTerm = event.target.value.toLowerCase();
         const filtered = builds.filter(build =>
             build.name.toLowerCase().includes(searchTerm) ||
-            build.hash.toLowerCase().includes(searchTerm) ||
             build.version.toLowerCase().includes(searchTerm) ||
             build.date.toLowerCase().includes(searchTerm) ||
             build.type.toLowerCase().includes(searchTerm)
@@ -248,7 +247,6 @@ const DownloadPage = () => {
                 <tr>
                     <th scope="col" className="px-6 py-3">ID</th>
                     <th scope="col" className="px-6 py-3">Nom</th>
-                    <th scope="col" className="px-6 py-3">Hash</th>
                     <th scope="col" className="px-6 py-3">Date</th>
                     <th scope="col" className="px-6 py-3">Version</th>
                     <th scope="col" className="px-6 py-3">Type</th>
@@ -266,9 +264,6 @@ const DownloadPage = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis"><span
                             className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.name}</span>
-                        </td>
-                        <td className="px-6 py-4"><span
-                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.hash}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis"><span
                             className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.date}</span>
