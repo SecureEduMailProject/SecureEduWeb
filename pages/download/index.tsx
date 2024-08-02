@@ -26,9 +26,9 @@ const DownloadPage = () => {
 
     const fetchBuilds = async () => {
         const urls = [
-            'https://github.com/SecureEduMailProject/SecureEduMail/releases.atom',
-            'https://github.com/SecureEduMailProject/SecureEduRest/releases.atom',
-            'https://github.com/SecureEduMailProject/SecureEduCrypt/releases.atom'
+            'https://cors-anywhere.herokuapp.com/https://github.com/SecureEduMailProject/SecureEduMail/releases.atom',
+            'https://cors-anywhere.herokuapp.com/https://github.com/SecureEduMailProject/SecureEduRest/releases.atom',
+            'https://cors-anywhere.herokuapp.com/https://github.com/SecureEduMailProject/SecureEduCrypt/releases.atom'
         ];
 
         const allBuilds: Build[] = [];
@@ -213,24 +213,67 @@ const DownloadPage = () => {
                 </thead>
                 <tbody>
                 {displayedBuilds.map((build) => (
-                    <tr key={build.id} className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td className="px-6 py-4">{build.id}</td>
-                        <td className="px-6 py-4">{build.name}</td>
-                        <td className="px-6 py-4">{build.hash}</td>
-                        <td className="px-6 py-4">{build.date}</td>
-                        <td className="px-6 py-4">{build.version}</td>
-                        <td className="px-6 py-4">{build.type}</td>
-                        <td className="px-6 py-4">{build.tag}</td>
-                        <td className="px-6 py-4"><a href={build.downloadLink} className="text-blue-600 hover:underline">Télécharger</a></td>
-                        <td className="px-6 py-4"><a href={build.githubLink} className="text-blue-600 hover:underline">GitHub</a></td>
+                    <tr key={build.id}
+                        className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td className="px-6 py-4"><span
+                            className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">#{build.id}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis"><span
+                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.name}</span>
+                        </td>
+                        <td className="px-6 py-4"><span
+                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.hash}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis"><span
+                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.date}</span>
+                        </td>
+                        <td className="px-6 py-4"><span
+                            className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{build.version}</span>
+                        </td>
+                        <td className="px-6 py-4"><span
+                            className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{build.type}</span>
+                        </td>
+                        <td className="px-6 py-4"><span
+                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.tag}</span>
+                        </td>
+                        <td className="px-6 py-4"><a href={build.downloadLink}
+                                                     className="text-blue-600 hover:underline">
+                            <button type="button"
+                                    className="py-2 px-6 me-1 mb-1 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Télécharger
+                            </button>
+                        </a></td>
+                        <td className="px-6 py-8 flex justify-center items-center">
+                            <a href={build.githubLink} className="text-blue-600 hover:underline px-2"
+                               aria-label="GitHub">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 16 16"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    className="text-gray-600 hover:text-gray-800"
+                                >
+                                    <path
+                                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.64 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                                </svg>
+                            </a>
+                        </td>
+
                     </tr>
+
                 ))}
                 </tbody>
+
             </table>
 
-            <nav className="flex items-center flex-col flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
-                    Showing <span className="font-semibold text-gray-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-semibold text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredBuilds.length)}</span> of <span className="font-semibold text-gray-900 dark:text-white">{filteredBuilds.length}</span>
+            <nav className="flex items-center flex-col flex-wrap md:flex-row justify-between pt-4"
+                 aria-label="Table navigation">
+                <span
+                    className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                    Showing <span
+                    className="font-semibold text-gray-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> to <span
+                    className="font-semibold text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredBuilds.length)}</span> of <span
+                    className="font-semibold text-gray-900 dark:text-white">{filteredBuilds.length}</span>
                 </span>
                 <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                     <li>
@@ -242,7 +285,7 @@ const DownloadPage = () => {
                             Previous
                         </button>
                     </li>
-                    {Array.from({ length: totalPages }, (_, index) => (
+                    {Array.from({length: totalPages}, (_, index) => (
                         <li key={index}>
                             <button
                                 onClick={() => handlePageChange(index + 1)}
