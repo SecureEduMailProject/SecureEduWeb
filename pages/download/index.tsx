@@ -1,4 +1,6 @@
+// pages/download/index.tsx
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { parseStringPromise } from 'xml2js';
 
 interface Build {
@@ -31,29 +33,24 @@ const DownloadPage = () => {
 
         const allBuilds: Build[] = [];
         for (const url of urls) {
-            try {
-                const response = await fetch(url);
-                const data = await response.text();
-                const parsedData = await parseStringPromise(data);
+            const { data } = await axios.get(url);
+            const parsedData = await parseStringPromise(data);
 
-                parsedData.feed.entry.forEach((entry: any) => {
-                    const content = entry.content[0]._;
-                    const build: Build = {
-                        id: parseInt(content.match(/Id : (\d+)/)[1]),
-                        name: content.match(/Name : (.+?)<br>/)[1],
-                        hash: content.match(/Hash : (.+?)<br>/)[1],
-                        date: content.match(/Date : (.+?)<br>/)[1],
-                        version: content.match(/V : (.+?)<br>/)[1],
-                        tag: content.match(/Tag : (.+?)<br>/)[1],
-                        type: url.includes('SecureEduMail') ? 'SecureEduMail' : url.includes('SecureEduRest') ? 'SecureEduRest' : 'SecureEduCrypt',
-                        downloadLink: `${url.split('/releases.atom')[0]}/releases/download/${entry.title[0]}/${content.match(/Name : (.+?)<br>/)[1]}`,
-                        githubLink: entry.link[0].$.href
-                    };
-                    allBuilds.push(build);
-                });
-            } catch (error) {
-                console.error(`Failed to fetch data from ${url}:`, error);
-            }
+            parsedData.feed.entry.forEach((entry: any) => {
+                const content = entry.content[0]._;
+                const build: Build = {
+                    id: parseInt(content.match(/Id : (\d+)/)[1]),
+                    name: content.match(/Name : (.+?)<br>/)[1],
+                    hash: content.match(/Hash : (.+?)<br>/)[1],
+                    date: content.match(/Date : (.+?)<br>/)[1],
+                    version: content.match(/V : (.+?)<br>/)[1],
+                    tag: content.match(/Tag : (.+?)<br>/)[1],
+                    type: url.includes('SecureEduMail') ? 'SecureEduMail' : url.includes('SecureEduRest') ? 'SecureEduRest' : 'SecureEduCrypt',
+                    downloadLink: `${url.split('/releases.atom')[0]}/releases/download/${entry.title[0]}/${content.match(/Name : (.+?)<br>/)[1]}`,
+                    githubLink: entry.link[0].$.href
+                };
+                allBuilds.push(build);
+            });
         }
 
         setBuilds(allBuilds);
@@ -184,7 +181,7 @@ const DownloadPage = () => {
                     <label htmlFor="table-search" className="sr-only">Search</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M17.293 16.293L12.95 11.95A6.5 6.5 0 1 0 11.95 12.95l4.343 4.343a1 1 0 0 0 1.414-1.414l-.414-.414Z" />
                                 <path fillRule="evenodd" d="M10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10ZM15 10A5 5 0 1 1 10 5a5 5 0 0 1 0 10ZM1 10C1 4.477 5.477 0 10 0s9 4.477 9 10-4.477 10-10 10S1 15.523 1 10Z" />
                             </svg>
