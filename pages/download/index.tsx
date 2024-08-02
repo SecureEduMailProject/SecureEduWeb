@@ -1,65 +1,100 @@
 // pages/download/index.tsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { parseStringPromise } from 'xml2js';
+'use client'
 
-interface Build {
-    id: number;
-    name: string;
-    hash: string;
-    date: string;
-    version: string;
-    tag: string;
-    type: string;
-    downloadLink: string;
-    githubLink: string;
-}
+import { useState } from 'react';
+
+const data = [
+
+    {
+        id: 774,
+        name: 'secureedurest-1.20.1-773-alpha.zip',
+        hash: '15359ed36b96912d18c83077cb1a64a7',
+        date: '2024-07-26',
+        version: 'v1.20.3',
+        tag: 'Stable',
+        type: 'SecureEduRest',
+        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
+        githubLink: 'https://github.com/your-repo/commit/773'
+    },
+    {
+        id: 774,
+        name: 'secureedurest-1.20.1-773-alpha.zip',
+        hash: '15359ed36b96912d18c83077cb1a64a7',
+        date: '2024-07-26',
+        version: 'v1.20.3',
+        tag: 'Stable',
+        type: 'SecureEduRest',
+        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
+        githubLink: 'https://github.com/your-repo/commit/773'
+    },
+    {
+        id: 774,
+        name: 'secureedurest-1.20.1-773-alpha.zip',
+        hash: '15359ed36b96912d18c83077cb1a64a7',
+        date: '2024-07-26',
+        version: 'v1.20.3',
+        tag: 'Stable',
+        type: 'SecureEduRest',
+        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
+        githubLink: 'https://github.com/your-repo/commit/773'
+    },
+    {
+        id: 774,
+        name: 'secureedurest-1.20.1-773-alpha.zip',
+        hash: '15359ed36b96912d18c83077cb1a64a7',
+        date: '2024-07-26',
+        version: 'v1.20.3',
+        tag: 'Stable',
+        type: 'SecureEduRest',
+        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
+        githubLink: 'https://github.com/your-repo/commit/773'
+    },
+    {
+        id: 774,
+        name: 'secureedurest-1.20.1-773-alpha.zip',
+        hash: '15359ed36b96912d18c83077cb1a64a7',
+        date: '2024-07-26',
+        version: 'v1.20.3',
+        tag: 'Stable',
+        type: 'SecureEduRest',
+        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
+        githubLink: 'https://github.com/your-repo/commit/773'
+    },
+    {
+        id: 774,
+        name: 'secureedurest-1.20.1-773-alpha.zip',
+        hash: '15359ed36b96912d18c83077cb1a64a7',
+        date: '2024-07-26',
+        version: 'v1.20.3',
+        tag: 'Stable',
+        type: 'SecureEduRest',
+        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
+        githubLink: 'https://github.com/your-repo/commit/773'
+    },
+    {
+        id: 774,
+        name: 'secureedurest-1.20.1-773-alpha.zip',
+        hash: '15359ed36b96912d18c83077cb1a64a7',
+        date: '2024-07-26',
+        version: 'v1.20.3',
+        tag: 'Stable',
+        type: 'SecureEduRest',
+        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
+        githubLink: 'https://github.com/your-repo/commit/773'
+    },
+
+    // Ajoutez d'autres données ici pour le test
+    // Ajoutez d'autres éléments pour tester la pagination
+];
 
 const DownloadPage = () => {
-    const [builds, setBuilds] = useState<Build[]>([]);
-    const [filteredBuilds, setFilteredBuilds] = useState<Build[]>([]);
-    const [selectedRepoType, setSelectedRepoType] = useState<string>('Tout');
-    const [selectedTag, setSelectedTag] = useState<string>('Tag');
-    const [selectedPeriod, setSelectedPeriod] = useState<string>('Toute période');
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 15;
-
-    const fetchBuilds = async () => {
-        const urls = [
-            'https://cors-anywhere.herokuapp.com/https://github.com/SecureEduMailProject/SecureEduMail/releases.atom',
-            'https://cors-anywhere.herokuapp.com/https://github.com/SecureEduMailProject/SecureEduRest/releases.atom',
-            'https://cors-anywhere.herokuapp.com/https://github.com/SecureEduMailProject/SecureEduCrypt/releases.atom'
-        ];
-
-        const allBuilds: Build[] = [];
-        for (const url of urls) {
-            const { data } = await axios.get(url);
-            const parsedData = await parseStringPromise(data);
-
-            parsedData.feed.entry.forEach((entry: any) => {
-                const content = entry.content[0]._;
-                const build: Build = {
-                    id: parseInt(content.match(/Id : (\d+)/)[1]),
-                    name: content.match(/Name : (.+?)<br>/)[1],
-                    hash: content.match(/Hash : (.+?)<br>/)[1],
-                    date: content.match(/Date : (.+?)<br>/)[1],
-                    version: content.match(/V : (.+?)<br>/)[1],
-                    tag: content.match(/Tag : (.+?)<br>/)[1],
-                    type: url.includes('SecureEduMail') ? 'SecureEduMail' : url.includes('SecureEduRest') ? 'SecureEduRest' : 'SecureEduCrypt',
-                    downloadLink: `${url.split('/releases.atom')[0]}/releases/download/${entry.title[0]}/${content.match(/Name : (.+?)<br>/)[1]}`,
-                    githubLink: entry.link[0].$.href
-                };
-                allBuilds.push(build);
-            });
-        }
-
-        setBuilds(allBuilds);
-        setFilteredBuilds(allBuilds);
-    };
-
-    useEffect(() => {
-        fetchBuilds();
-    }, []);
+    const [builds, setBuilds] = useState(data);
+    const [filteredBuilds, setFilteredBuilds] = useState(data);
+    const [selectedRepoType, setSelectedRepoType] = useState('Tout');
+    const [selectedTag, setSelectedTag] = useState('Tag');
+    const [selectedPeriod, setSelectedPeriod] = useState('Toute période');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const searchTerm = event.target.value.toLowerCase();
@@ -71,7 +106,7 @@ const DownloadPage = () => {
             build.type.toLowerCase().includes(searchTerm)
         );
         setFilteredBuilds(filtered);
-        setCurrentPage(1);
+        setCurrentPage(1); // Reset to the first page on search
     };
 
     const handleRepoTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -117,7 +152,7 @@ const DownloadPage = () => {
             return matchesRepoType && matchesTag && matchesPeriod;
         });
         setFilteredBuilds(filtered);
-        setCurrentPage(1);
+        setCurrentPage(1); // Reset to the first page on filter
     };
 
     const totalPages = Math.ceil(filteredBuilds.length / itemsPerPage);
@@ -131,19 +166,29 @@ const DownloadPage = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
 
-            <div className="text-center mb-4">
-                <h1 className="text-center font-semibold">SecureEduMail</h1>
-                <p>Téléchargez les dernières versions ci-dessous</p>
+            <div className="text-center mb-6">
+                <h1 className="mb-6 border-y text-5xl font-bold [border-image:linear-gradient(to_right,transparent,theme(colors.slate.300/.8),transparent)1] md:text-6xl"
+                    data-aos="zoom-y-out" data-aos-delay={150}>
+                    SecureEduMail <br className="max-lg:hidden"/>
+                    Une plateforme éducative sécurisée pour les étudiants.
+                </h1>
+                <div className="mx-auto max-w-3xl">
+                    <p className="mb-8 text-lg text-gray-700" data-aos="zoom-y-out" data-aos-delay={300}>
+                        Vous pouvez retrouver tout les téléchargements de chaque référenciel juste ici.
+                    </p>
+                </div>
             </div>
 
+
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <div className="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
+                <div
+                    className="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
                     <div className="flex items-center space-x-4">
                         <select
                             onChange={handleRepoTypeChange}
@@ -181,9 +226,10 @@ const DownloadPage = () => {
                     <label htmlFor="table-search" className="sr-only">Search</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M17.293 16.293L12.95 11.95A6.5 6.5 0 1 0 11.95 12.95l4.343 4.343a1 1 0 0 0 1.414-1.414l-.414-.414Z" />
-                                <path fillRule="evenodd" d="M10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10ZM15 10A5 5 0 1 1 10 5a5 5 0 0 1 0 10ZM1 10C1 4.477 5.477 0 10 0s9 4.477 9 10-4.477 10-10 10S1 15.523 1 10Z" />
+                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="m19 19-4-4m1.5-2.5a7.5 7.5 0 1 0-15 0 7.5 7.5 0 0 0 15 0Z"/>
                             </svg>
                         </div>
                         <input
@@ -263,7 +309,6 @@ const DownloadPage = () => {
 
                 ))}
                 </tbody>
-
             </table>
 
             <nav className="flex items-center flex-col flex-wrap md:flex-row justify-between pt-4"
