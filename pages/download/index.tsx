@@ -1,100 +1,68 @@
-// pages/download/index.tsx
-'use client'
+import React, { useEffect, useState } from 'react';
+import { parseStringPromise } from 'xml2js';
 
-import { useState } from 'react';
-
-const data = [
-
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-
-    // Ajoutez d'autres données ici pour le test
-    // Ajoutez d'autres éléments pour tester la pagination
-];
+interface Build {
+    id: number;
+    name: string;
+    hash: string;
+    date: string;
+    version: string;
+    tag: string;
+    type: string;
+    downloadLink: string;
+    githubLink: string;
+}
 
 const DownloadPage = () => {
-    const [builds, setBuilds] = useState(data);
-    const [filteredBuilds, setFilteredBuilds] = useState(data);
-    const [selectedRepoType, setSelectedRepoType] = useState('Tout');
-    const [selectedTag, setSelectedTag] = useState('Tag');
-    const [selectedPeriod, setSelectedPeriod] = useState('Toute période');
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
+    const [builds, setBuilds] = useState<Build[]>([]);
+    const [filteredBuilds, setFilteredBuilds] = useState<Build[]>([]);
+    const [selectedRepoType, setSelectedRepoType] = useState<string>('Tout');
+    const [selectedTag, setSelectedTag] = useState<string>('Tag');
+    const [selectedPeriod, setSelectedPeriod] = useState<string>('Toute période');
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const itemsPerPage = 15;
+
+    const fetchBuilds = async () => {
+        const urls = [
+            'https://github.com/SecureEduMailProject/SecureEduMail/releases.atom',
+            'https://github.com/SecureEduMailProject/SecureEduRest/releases.atom',
+            'https://github.com/SecureEduMailProject/SecureEduCrypt/releases.atom'
+        ];
+
+        const allBuilds: Build[] = [];
+        for (const url of urls) {
+            try {
+                const response = await fetch(url);
+                const data = await response.text();
+                const parsedData = await parseStringPromise(data);
+
+                parsedData.feed.entry.forEach((entry: any) => {
+                    const content = entry.content[0]._;
+                    const build: Build = {
+                        id: parseInt(content.match(/Id : (\d+)/)[1]),
+                        name: content.match(/Name : (.+?)<br>/)[1],
+                        hash: content.match(/Hash : (.+?)<br>/)[1],
+                        date: content.match(/Date : (.+?)<br>/)[1],
+                        version: content.match(/V : (.+?)<br>/)[1],
+                        tag: content.match(/Tag : (.+?)<br>/)[1],
+                        type: url.includes('SecureEduMail') ? 'SecureEduMail' : url.includes('SecureEduRest') ? 'SecureEduRest' : 'SecureEduCrypt',
+                        downloadLink: `${url.split('/releases.atom')[0]}/releases/download/${entry.title[0]}/${content.match(/Name : (.+?)<br>/)[1]}`,
+                        githubLink: entry.link[0].$.href
+                    };
+                    allBuilds.push(build);
+                });
+            } catch (error) {
+                console.error(`Failed to fetch data from ${url}:`, error);
+            }
+        }
+
+        setBuilds(allBuilds);
+        setFilteredBuilds(allBuilds);
+    };
+
+    useEffect(() => {
+        fetchBuilds();
+    }, []);
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const searchTerm = event.target.value.toLowerCase();
@@ -106,7 +74,7 @@ const DownloadPage = () => {
             build.type.toLowerCase().includes(searchTerm)
         );
         setFilteredBuilds(filtered);
-        setCurrentPage(1); // Reset to the first page on search
+        setCurrentPage(1);
     };
 
     const handleRepoTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -152,7 +120,7 @@ const DownloadPage = () => {
             return matchesRepoType && matchesTag && matchesPeriod;
         });
         setFilteredBuilds(filtered);
-        setCurrentPage(1); // Reset to the first page on filter
+        setCurrentPage(1);
     };
 
     const totalPages = Math.ceil(filteredBuilds.length / itemsPerPage);
@@ -166,29 +134,19 @@ const DownloadPage = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
 
-            <div className="text-center mb-6">
-                <h1 className="mb-6 border-y text-5xl font-bold [border-image:linear-gradient(to_right,transparent,theme(colors.slate.300/.8),transparent)1] md:text-6xl"
-                    data-aos="zoom-y-out" data-aos-delay={150}>
-                    SecureEduMail <br className="max-lg:hidden"/>
-                    Une plateforme éducative sécurisée pour les étudiants.
-                </h1>
-                <div className="mx-auto max-w-3xl">
-                    <p className="mb-8 text-lg text-gray-700" data-aos="zoom-y-out" data-aos-delay={300}>
-                        Vous pouvez retrouver tout les téléchargements de chaque référenciel juste ici.
-                    </p>
-                </div>
+            <div className="text-center mb-4">
+                <h1 className="text-center font-semibold">SecureEduMail</h1>
+                <p>Téléchargez les dernières versions ci-dessous</p>
             </div>
 
-
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <div
-                    className="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
+                <div className="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
                     <div className="flex items-center space-x-4">
                         <select
                             onChange={handleRepoTypeChange}
@@ -226,10 +184,9 @@ const DownloadPage = () => {
                     <label htmlFor="table-search" className="sr-only">Search</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                      stroke-width="2" d="m19 19-4-4m1.5-2.5a7.5 7.5 0 1 0-15 0 7.5 7.5 0 0 0 15 0Z"/>
+                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 16.293L12.95 11.95A6.5 6.5 0 1 0 11.95 12.95l4.343 4.343a1 1 0 0 0 1.414-1.414l-.414-.414Z" />
+                                <path fillRule="evenodd" d="M10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10ZM15 10A5 5 0 1 1 10 5a5 5 0 0 1 0 10ZM1 10C1 4.477 5.477 0 10 0s9 4.477 9 10-4.477 10-10 10S1 15.523 1 10Z" />
                             </svg>
                         </div>
                         <input
@@ -259,66 +216,24 @@ const DownloadPage = () => {
                 </thead>
                 <tbody>
                 {displayedBuilds.map((build) => (
-                    <tr key={build.id}
-                        className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td className="px-6 py-4"><span
-                            className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">#{build.id}</span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis"><span
-                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.name}</span>
-                        </td>
-                        <td className="px-6 py-4"><span
-                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.hash}</span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis"><span
-                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.date}</span>
-                        </td>
-                        <td className="px-6 py-4"><span
-                            className="bg-purple-100 text-purple-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{build.version}</span>
-                        </td>
-                        <td className="px-6 py-4"><span
-                            className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-indigo-400 border border-indigo-400">{build.type}</span>
-                        </td>
-                        <td className="px-6 py-4"><span
-                            className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{build.tag}</span>
-                        </td>
-                        <td className="px-6 py-4"><a href={build.downloadLink}
-                                                     className="text-blue-600 hover:underline">
-                            <button type="button"
-                                    className="py-2 px-6 me-1 mb-1 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Télécharger
-                            </button>
-                        </a></td>
-                        <td className="px-6 py-8 flex justify-center items-center">
-                            <a href={build.githubLink} className="text-blue-600 hover:underline px-2"
-                               aria-label="GitHub">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 16 16"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    className="text-gray-600 hover:text-gray-800"
-                                >
-                                    <path
-                                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.64 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                                </svg>
-                            </a>
-                        </td>
-
+                    <tr key={build.id} className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td className="px-6 py-4">{build.id}</td>
+                        <td className="px-6 py-4">{build.name}</td>
+                        <td className="px-6 py-4">{build.hash}</td>
+                        <td className="px-6 py-4">{build.date}</td>
+                        <td className="px-6 py-4">{build.version}</td>
+                        <td className="px-6 py-4">{build.type}</td>
+                        <td className="px-6 py-4">{build.tag}</td>
+                        <td className="px-6 py-4"><a href={build.downloadLink} className="text-blue-600 hover:underline">Télécharger</a></td>
+                        <td className="px-6 py-4"><a href={build.githubLink} className="text-blue-600 hover:underline">GitHub</a></td>
                     </tr>
-
                 ))}
                 </tbody>
             </table>
 
-            <nav className="flex items-center flex-col flex-wrap md:flex-row justify-between pt-4"
-                 aria-label="Table navigation">
-                <span
-                    className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
-                    Showing <span
-                    className="font-semibold text-gray-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> to <span
-                    className="font-semibold text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredBuilds.length)}</span> of <span
-                    className="font-semibold text-gray-900 dark:text-white">{filteredBuilds.length}</span>
+            <nav className="flex items-center flex-col flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                    Showing <span className="font-semibold text-gray-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-semibold text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredBuilds.length)}</span> of <span className="font-semibold text-gray-900 dark:text-white">{filteredBuilds.length}</span>
                 </span>
                 <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                     <li>
@@ -330,7 +245,7 @@ const DownloadPage = () => {
                             Previous
                         </button>
                     </li>
-                    {Array.from({length: totalPages}, (_, index) => (
+                    {Array.from({ length: totalPages }, (_, index) => (
                         <li key={index}>
                             <button
                                 onClick={() => handlePageChange(index + 1)}
