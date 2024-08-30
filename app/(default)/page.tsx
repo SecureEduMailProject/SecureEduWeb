@@ -3,7 +3,7 @@ import DownloadPage from "@/pages/download";
 export const metadata = {
   title: "SecureEduMail - Web",
   description: "SecureEduMail\n" +
-      "Une plateforme éducative sécurisée pour les étudiants et les enseignants.",
+      "Une plateforme éducative sécurisée pour les étudiants .",
 };
 
 import Hero from "@/components/hero-home";
