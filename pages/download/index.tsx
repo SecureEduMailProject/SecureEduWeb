@@ -1,100 +1,54 @@
 // pages/download/index.tsx
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const data = [
-
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-    {
-        id: 774,
-        name: 'secureedurest-1.20.1-773-alpha.zip',
-        hash: '15359ed36b96912d18c83077cb1a64a7',
-        date: '2024-07-26',
-        version: 'v1.20.3',
-        tag: 'Stable',
-        type: 'SecureEduRest',
-        downloadLink: 'https://example.com/secureeducrypt-1.20.1-773-alpha.zip',
-        githubLink: 'https://github.com/your-repo/commit/773'
-    },
-
-    // Ajoutez d'autres données ici pour le test
-    // Ajoutez d'autres éléments pour tester la pagination
-];
+// Define the type for builds
+type Build = {
+    id: number;
+    name: string;
+    date: string;
+    version: string;
+    tag: string;
+    type: string;
+    downloadLink: string;
+    githubLink: string;
+};
 
 const DownloadPage = () => {
-    const [builds, setBuilds] = useState(data);
-    const [filteredBuilds, setFilteredBuilds] = useState(data);
+    const [builds, setBuilds] = useState<Build[]>([]);
+    const [filteredBuilds, setFilteredBuilds] = useState<Build[]>([]);
     const [selectedRepoType, setSelectedRepoType] = useState('Tout');
     const [selectedTag, setSelectedTag] = useState('Tag');
     const [selectedPeriod, setSelectedPeriod] = useState('Toute période');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
+
+    // Fetch data from the API
+    useEffect(() => {
+        const fetchBuilds = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/api/v1/miscellaneous/releasesparser');
+                const fetchedData = response.data.entries.map((entry: any) => ({
+                    id: parseInt(entry.id, 10),
+                    name: entry.name,
+                    date: entry.date,
+                    version: entry.version,
+                    tag: entry.tag,
+                    type: entry.type,
+                    downloadLink: entry.downloadLink,
+                    githubLink: entry.githubLink,
+                }));
+                setBuilds(fetchedData);
+                setFilteredBuilds(fetchedData);
+            } catch (error) {
+                console.error('Error fetching builds:', error);
+            }
+        };
+
+        fetchBuilds();
+    }, []);
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const searchTerm = event.target.value.toLowerCase();
@@ -131,10 +85,8 @@ const DownloadPage = () => {
             const matchesTag = tag === 'Tag' || build.tag === tag;
             let matchesPeriod = true;
 
+            // Check based on selected period
             switch (period) {
-                case 'Dernière heure':
-                    matchesPeriod = (now.getTime() - buildDate.getTime()) <= 3600000;
-                    break;
                 case 'Dernier jour':
                     matchesPeriod = (now.getTime() - buildDate.getTime()) <= 86400000;
                     break;
@@ -145,17 +97,22 @@ const DownloadPage = () => {
                     matchesPeriod = (now.getTime() - buildDate.getTime()) <= 31536000000;
                     break;
                 default:
+                    // For 'Toute période' or default, show all periods
+                    matchesPeriod = true;
                     break;
             }
 
+            // Return true only if all conditions are met
             return matchesRepoType && matchesTag && matchesPeriod;
+
         });
         setFilteredBuilds(filtered);
         setCurrentPage(1); // Reset to the first page on filter
     };
 
     const totalPages = Math.ceil(filteredBuilds.length / itemsPerPage);
-    const displayedBuilds = filteredBuilds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const displayedBuilds = filteredBuilds.slice((currentPage - 1
+    ) * itemsPerPage, currentPage * itemsPerPage);
 
     const handlePageChange = (page: number) => {
         if (page > 0 && page <= totalPages) {
@@ -195,10 +152,11 @@ const DownloadPage = () => {
                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
                             <option value="Tout">Tout</option>
-                            <option value="SecureEduMail">SecureEduMail</option>
-                            <option value="SecureEduRest">SecureEduRest</option>
-                            <option value="SecureEduCrypt">SecureEduCrypt</option>
+                            <option value="secureedumail">SecureEduMail</option>
+                            <option value="secureedurest">SecureEduRest</option>
+                            <option value="secureeducrypt">SecureEduCrypt</option>
                         </select>
+
                         <select
                             onChange={handleTagChange}
                             value={selectedTag}
@@ -216,11 +174,11 @@ const DownloadPage = () => {
                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
                             <option value="Toute période">Toute période</option>
-                            <option value="Dernière heure">Dernière heure</option>
                             <option value="Dernier jour">Dernier jour</option>
                             <option value="Dernier mois">Dernier mois</option>
                             <option value="Dernière année">Dernière année</option>
                         </select>
+
                     </div>
                     <label htmlFor="table-search" className="sr-only">Search</label>
                     <div className="relative">
