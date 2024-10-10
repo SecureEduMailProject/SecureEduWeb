@@ -29,7 +29,7 @@ const DownloadPage = () => {
     useEffect(() => {
         const fetchBuilds = async () => {
             try {
-                const response = await axios.get('http://vm-sandro-cdn.secureedumail.xyz:3000/get-releases');
+                const response = await axios.get('https://parser.vm-sandro-cdn.secureedumail.xyz:8443/get-releases');
                 const fetchedData = response.data.entries.map((entry: any) => ({
                     id: parseInt(entry.id, 10),
                     name: entry.name,
